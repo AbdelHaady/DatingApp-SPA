@@ -44,12 +44,15 @@ export class AuthService {
   }
 
   private handleError(errorResponse: HttpErrorResponse) {
+
     const applicationError = errorResponse.headers.get('Application-Error');
     if (applicationError) {
       return throwError(applicationError);
     }
+
     const serverError = errorResponse.error.errors;
-    if (serverError) {
+
+    if (serverError !== undefined) {
       let modelStateError = '';
       for (const key in serverError) {
         if (serverError[key]) {
@@ -58,6 +61,7 @@ export class AuthService {
       }
       return throwError(modelStateError || 'Server Error');
     }
+    return throwError('error');
   }
 
   loggedIn() {
