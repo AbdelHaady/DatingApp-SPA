@@ -10,7 +10,7 @@ export interface User {
   LastActive: Date;
   introduction?: string;
   interests?: string;
-  lockingFor?: string;
+  lookingFor?: string;
   city: string;
   country: string;
   mainPhotoUrl?: string;

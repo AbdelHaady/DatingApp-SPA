@@ -27,6 +27,11 @@ export class UserService {
     .pipe(catchError(this.handleError)) as Observable<User>;
   }
 
+  updateUser(id: number, user: User){
+    return this.http.put(this.baseUrl + 'users/' + id, user)
+    .pipe(catchError(this.handleError));
+  }
+
   requestOptions() {
     return {
       headers: new HttpHeaders({

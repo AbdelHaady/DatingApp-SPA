@@ -29,7 +29,7 @@
           >Welcome {{ this.authService.decodedToken?.unique_name }}</a
         >
         <div class="dropdown-menu" *dropdownMenu>
-          <a class="dropdown-item" href="#"
+          <a class="dropdown-item" [routerLink]="['/member/edit']"
             ><i class="fa fa-user"></i> Edit profile</a
           >
           <a class="dropdown-item" style="cursor: pointer" (click)="logout()"
