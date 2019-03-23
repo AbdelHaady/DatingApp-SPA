@@ -12,10 +12,16 @@ import { User } from '../_models/User';
 export class NavComponent implements OnInit {
   model: any = {};
   user: User;
-  constructor(public authService: AuthService, private alertifyService: AlertifyService, private router: Router) {}
+  constructor(
+    public authService: AuthService,
+    private alertifyService: AlertifyService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
-    this.authService.currentUserObservable.subscribe(user => this.user = user);
+    this.authService.currentUserObservable.subscribe(user => {
+      this.user = user;
+    });
   }
 
   loggedIn() {
@@ -29,7 +35,8 @@ export class NavComponent implements OnInit {
       },
       error => {
         this.alertifyService.error('Faild to log in');
-      }, () => {
+      },
+      () => {
         this.router.navigate(['/members']);
       }
     );

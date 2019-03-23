@@ -1,4 +1,4 @@
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -19,7 +19,8 @@ import { NgxGalleryModule } from 'ngx-gallery';
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
 import { FileUploadModule } from 'ng2-file-upload';
-// import { AngularFileUploaderModule } from "angular-file-uploader";
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+
 export function tokenGetter() {
   return localStorage.getItem('token');
 }
@@ -51,7 +52,9 @@ export function tokenGetter() {
       }),
       TabsModule.forRoot(),
       NgxGalleryModule,
-      FileUploadModule
+      FileUploadModule,
+      ReactiveFormsModule,
+      BsDatepickerModule.forRoot()
    ],
    providers: [],
    bootstrap: [

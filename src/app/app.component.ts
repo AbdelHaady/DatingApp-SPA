@@ -15,8 +15,8 @@ export class AppComponent implements OnInit {
     const user = JSON.parse(localStorage.getItem('user')) as User;
     this.authService.decodedToken = this.authService.jwtHelper.decodeToken(localStorage.getItem('token'));
     if (user) {
+      this.authService.changeCurrentUser(this.authService.initialUser(user));
       this.authService.currentUserObservable.subscribe(u => this.authService.currentUser = u);
-      this.authService.changeCurrentUser(user);
     }
   }
 

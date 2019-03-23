@@ -1,11 +1,10 @@
 <div
-  *ngIf="user.mainPhotoUrl != null"
   class="card card-outline-success bg-light border-0 m-1 p-1"
 >
   <div class="overflow-hidden">
     <img
       class="card-img-top"
-      src="{{ user.mainPhotoUrl }}"
+      src="{{ user.mainPhotoUrl? user.mainPhotoUrl : '../../../../../assets/116 user.png' }}"
       alt="{{ user.knownAs }}"
     />
       <ul class="list-inline text-center btn-group-animation mt-n5">
