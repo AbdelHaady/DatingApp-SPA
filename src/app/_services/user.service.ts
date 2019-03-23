@@ -32,6 +32,18 @@ export class UserService {
     .pipe(catchError(this.handleError));
   }
 
+  setMainPhoto(userId: number, id: number){
+    return this.http.post(this.baseUrl + 'users/' + userId + '/photos/' + id + '/setMain', {}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  deletePhoto(userId: number, id: number) {
+    return this.http.delete(this.baseUrl + 'users/' + userId + '/photos/' + id , {}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   requestOptions() {
     return {
       headers: new HttpHeaders({

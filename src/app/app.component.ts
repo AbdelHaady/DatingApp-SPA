@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './_services/auth.service';
+import { User } from './_models/User';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,12 @@ export class AppComponent implements OnInit {
   title = 'DatingAppSPA';
 
   ngOnInit(): void {
+    const user = JSON.parse(localStorage.getItem('user')) as User;
     this.authService.decodedToken = this.authService.jwtHelper.decodeToken(localStorage.getItem('token'));
+    if (user) {
+      this.authService.currentUserObservable.subscribe(u => this.authService.currentUser = u);
+      this.authService.changeCurrentUser(user);
+    }
   }
 
 }

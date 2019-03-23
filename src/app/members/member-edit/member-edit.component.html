@@ -34,63 +34,89 @@
       </div>
       <div class="card-footer">
         <div class="btn-group-sm m-auto text-center">
-          <button form="editForm" [disabled]="!editForm.dirty" class="btn btn-success btn-block">Save Changes</button>
+          <button
+            form="editForm"
+            [disabled]="!editForm.dirty"
+            class="btn btn-success btn-block"
+          >
+            Save Changes
+          </button>
         </div>
       </div>
     </div>
     <div class="col-sm-8">
       <div [hidden]="!editForm.dirty">
         <h6 class="alert alert-info">
-          <strong>Information:</strong> you have made some changes. any changes will be lost if you don't
-          save it
+          <strong>Information:</strong> you have made some changes. any changes
+          will be lost if you don't save it
         </h6>
       </div>
       <div>
         <tabset>
           <tab heading="Edit Profile">
-            <form #editForm="ngForm" (submit)="updateUser()" id="editForm">
-              <div>
-                <div class="form-group">
-                  <label>Description:</label>
-                  <textarea
-                    class="form-control"
-                    name="introduction"
-                    id="introduction"
-                    rows="6"
-                    [(ngModel)]="user.introduction"
-                  ></textarea>
-                </div>
-                <div class="form-group">
-                  <label>Looking For:</label>
-                  <textarea
-                    class="form-control"
-                    name="lookingFor"
-                    id="lookingFor"
-                    rows="6"
-                    [(ngModel)]="user.lookingFor"
-                  ></textarea>
-                </div>
-                <div class="form-group">
-                  <label for="">Interests</label>
-                  <textarea name="interests" id="interests" rows="6" class="form-control" [(ngModel)]="user.interests"></textarea>
-                </div>
+            <div class="container m-auto tab-content">
+              <form #editForm="ngForm" (submit)="updateUser()" id="editForm">
                 <div>
-                  <label for="">Location Details:</label>
-                  <div class="form-inline">
-                    <label for="" class="m-1">Country: </label>
-                    <input type="text" name="country" id="country" class="form-control" [(ngModel)]="user.country">
+                  <div class="form-group">
+                    <label>Description:</label>
+                    <textarea
+                      class="form-control"
+                      name="introduction"
+                      id="introduction"
+                      rows="6"
+                      [(ngModel)]="user.introduction"
+                    ></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Looking For:</label>
+                    <textarea
+                      class="form-control"
+                      name="lookingFor"
+                      id="lookingFor"
+                      rows="6"
+                      [(ngModel)]="user.lookingFor"
+                    ></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="">Interests</label>
+                    <textarea
+                      name="interests"
+                      id="interests"
+                      rows="6"
+                      class="form-control"
+                      [(ngModel)]="user.interests"
+                    ></textarea>
+                  </div>
+                  <div>
+                    <label for="">Location Details:</label>
+                    <div class="form-inline">
+                      <label for="" class="m-1">Country: </label>
+                      <input
+                        type="text"
+                        name="country"
+                        id="country"
+                        class="form-control"
+                        [(ngModel)]="user.country"
+                      />
 
-                    <label for="" class="m-1">City: </label>
-                    <input type="text" name="city" id="city" class="form-control" [(ngModel)]="user.city">
+                      <label for="" class="m-1">City: </label>
+                      <input
+                        type="text"
+                        name="city"
+                        id="city"
+                        class="form-control"
+                        [(ngModel)]="user.city"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </form>
+              </form>
+            </div>
           </tab>
 
           <tab heading="Edit Photos">
-            <div class="tab-content container">
-              <p>photos will go here</p>
+            <div class="tab-content container mt-1">
+              <app-photo-editor [photos]="user.photos"></app-photo-editor>
             </div>
           </tab>
         </tabset>

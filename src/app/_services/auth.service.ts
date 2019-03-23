@@ -3,25 +3,53 @@ import { HttpClient, HttpHeaders, HttpRequest, HttpResponse, HttpErrorResponse }
 import { map, catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs/internal/observable/throwError';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { User } from '../_models/User';
+import { environment } from 'src/environments/environment';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Photo } from '../_models/Photo';
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class AuthService {
-  baseUrl = 'http://localhost:5000/api/auth/';
+  photoUrl = new BehaviorSubject<string>('');
+  baseUrl = environment.apiUrl + 'auth/';
   userToken: any;
   jwtHelper = new JwtHelperService();
   decodedToken: any;
+  private userBehaviorSubject = new BehaviorSubject<User>(
+    JSON.parse(localStorage.getItem('user')) as User
+  );
+  currentUserObservable: Observable<User> = this.userBehaviorSubject.asObservable();
+  currentUser: User;
   constructor(private http: HttpClient) {}
+
+  changeCurrentUser(user: User) {
+    this.userBehaviorSubject.next(user);
+    this.changePhotosForCurrentUser(user.photos);
+  }
+  changePhotosForCurrentUser(photos: Photo[]) {
+    this.currentUser.photos = photos;
+    this.currentUser.mainPhotoUrl = this.currentUser.photos.find(
+      p => p.isMain === true
+    ).url;
+    this.userBehaviorSubject.next(this.currentUser);
+    localStorage.setItem('user', JSON.stringify(this.currentUser));
+  }
 
   login(model: any) {
     return this.http
       .post(this.baseUrl + 'login', model, this.requestOptions())
       .pipe(
-        map(response => {
-          const user: User = response as User;
-          if (user) {
-            localStorage.setItem('token', user.tokenString);
-            this.userToken = user.tokenString;
+        map((response: any) => {
+          if (response) {
+            localStorage.setItem('token', response.tokenString);
+            localStorage.setItem('user', JSON.stringify(response.user));
+            this.userToken = response.tokenString;
+            const user = response.user as User;
+            this.changeCurrentUser(user);
+          this.changePhotosForCurrentUser(user.photos);
             this.decodedToken = this.jwtHelper.decodeToken(this.userToken);
           }
         }),
@@ -67,7 +95,4 @@ export class AuthService {
   loggedIn() {
     return !this.jwtHelper.isTokenExpired(localStorage.getItem('token'));
   }
-}
-export class User {
-  tokenString: any;
 }

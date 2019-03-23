@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+<nav class="navbar navbar-expand-sm navbar-dark bg-primary p-1">
   <a class="navbar-brand" [routerLink]="['/home']">DatingApp</a>
   <button
     class="navbar-toggler navbar-toggler-icon"
@@ -24,6 +24,9 @@
       </ul>
     </div>
     <ul *ngIf="loggedIn()" class="navbar-nav mr-5 mt-2 mt-lg-0">
+      <li class="nav-item">
+        <img src="{{user?.mainPhotoUrl}}" alt="{{user?.userName}}" class="rounded-circle img-profile m-0">
+      </li>
       <li class="dropdown nav-item" dropdown>
         <a class="nav-link  dropdown-toggle" (click)="false" style="cursor: pointer" dropdownToggle
           >Welcome {{ this.authService.decodedToken?.unique_name }}</a

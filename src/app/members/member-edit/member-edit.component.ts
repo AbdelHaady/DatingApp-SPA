@@ -22,12 +22,12 @@ export class MemberEditComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.data.subscribe(data => {
-      this.user = data.user;
-      this.user.mainPhotoUrl = this.user.photos.find(
-        p => p.isMain === true
-      ).url;
+    this.authService.currentUserObservable.subscribe(user => {
+      this.user = user;
     });
+    // this.route.data.subscribe(data => {
+    //   this.user = data.user;
+    // });
   }
 
   updateUser() {
