@@ -3,11 +3,14 @@ import { environment } from 'src/environments/environment';
 import {
   HttpClient,
   HttpHeaders,
-  HttpErrorResponse
+  HttpErrorResponse,
+  HttpResponse
 } from '@angular/common/http';
 import { User } from '../_models/User';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, throwError, of, observable } from 'rxjs';
+import { catchError, tap, map } from 'rxjs/operators';
+import { PaginatedResult, Pagination } from '../_models/pagination';
+import { UserParams } from '../_models/UserParams';
 
 @Injectable({
   providedIn: 'root'
@@ -16,41 +19,66 @@ export class UserService {
   baseUrl = environment.apiUrl;
   constructor(private http: HttpClient) {}
 
-  getUsers(): Observable<User[]> {
+  requestOptions() {
+    return {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      observe: 'response' as 'body'
+    };
+  }
+
+  getUsers(userParams?: UserParams): Observable<PaginatedResult<User[]>> {
     return this.http
-      .get(this.baseUrl + 'users', this.requestOptions())
-      .pipe(catchError(this.handleError)) as Observable<User[]>;
+      .get<HttpResponse<any>>(
+        this.baseUrl +
+          'users' +
+          (userParams || userParams != null
+            ? '?' +
+            (userParams.pageNumber != null ? 'pageNumber=' + userParams.pageNumber + '&' : '') +
+            (userParams.itemsPerPage != null ? 'itemsPerPage=' + userParams.itemsPerPage + '&' : '') +
+            (userParams.gender != null ? 'gender=' + userParams.gender + '&' : '') +
+            (userParams.orderBy != null ? 'orderBy=' + userParams.orderBy + '&' : '') +
+            (userParams.minAge != null ? 'minAge=' + userParams.minAge + '&' : '') +
+            (userParams.maxAge != null ? 'maxAge=' + userParams.maxAge : '' )
+            : ''),
+        this.requestOptions()
+      )
+      .pipe(
+        map(response => {
+          const paginatedResult = new PaginatedResult<User[]>();
+          paginatedResult.pagination = JSON.parse(
+            response.headers.get('Pagination')
+          ) as Pagination;
+          paginatedResult.result = response.body;
+          return paginatedResult;
+        }),
+        catchError(this.handleError)
+      );
   }
 
   getUser(id: number): Observable<User> {
-    return this.http.get(this.baseUrl + 'users/' + id)
-    .pipe(catchError(this.handleError)) as Observable<User>;
+    return this.http
+      .get(this.baseUrl + 'users/' + id)
+      .pipe(catchError(this.handleError)) as Observable<User>;
   }
 
-  updateUser(id: number, user: User){
-    return this.http.put(this.baseUrl + 'users/' + id, user)
-    .pipe(catchError(this.handleError));
+  updateUser(id: number, user: User) {
+    return this.http
+      .put(this.baseUrl + 'users/' + id, user)
+      .pipe(catchError(this.handleError));
   }
 
-  setMainPhoto(userId: number, id: number){
-    return this.http.post(this.baseUrl + 'users/' + userId + '/photos/' + id + '/setMain', {}).pipe(
-      catchError(this.handleError)
-    );
+  setMainPhoto(userId: number, id: number) {
+    return this.http
+      .post(this.baseUrl + 'users/' + userId + '/photos/' + id + '/setMain', {})
+      .pipe(catchError(this.handleError));
   }
 
   deletePhoto(userId: number, id: number) {
-    return this.http.delete(this.baseUrl + 'users/' + userId + '/photos/' + id , {}).pipe(
-      catchError(this.handleError)
-    );
+    return this.http
+      .delete(this.baseUrl + 'users/' + userId + '/photos/' + id, {})
+      .pipe(catchError(this.handleError));
   }
 
-  requestOptions() {
-    return {
-      headers: new HttpHeaders({
-        'Content-type': 'application/json'
-      })
-    };
-  }
   private handleError(errorResponse: HttpErrorResponse) {
     const applicationError = errorResponse.headers.get('Application-Error');
     if (applicationError) {

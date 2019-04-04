@@ -3,6 +3,7 @@ import { User } from 'src/app/_models/User';
 import { ActivatedRoute } from '@angular/router';
 import { NgxGalleryOptions, NgxGalleryImage } from 'ngx-gallery';
 import { forEach } from '@angular/router/src/utils/collection';
+import { AuthService } from 'src/app/_services/auth.service';
 
 @Component({
   selector: 'app-member-detail',
@@ -11,7 +12,8 @@ import { forEach } from '@angular/router/src/utils/collection';
 })
 export class MemberDetailComponent implements OnInit {
   constructor(
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private authService: AuthService
   ) {}
   user: User;
   galleryOptions: NgxGalleryOptions[] = [];
@@ -38,9 +40,7 @@ export class MemberDetailComponent implements OnInit {
   ngOnInit() {
     this.route.data.subscribe(data => {
       this.user = data.user;
-      this.user.mainPhotoUrl = this.user.photos.find(
-        p => (p.isMain = true)
-      ).url;
+      this.user = this.authService.initialUser(this.user);
       this.configGalleryOptions();
       this.configGalleryImages();
     });

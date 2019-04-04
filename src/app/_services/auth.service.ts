@@ -34,7 +34,7 @@ export class AuthService {
   changePhotosForCurrentUser(photos: Photo[]) {
     this.currentUser.photos = photos;
     this.userBehaviorSubject.next(this.initialUser(this.currentUser));
-    localStorage.setItem('user', JSON.stringify(this.currentUser));
+    // localStorage.setItem('user', JSON.stringify(this.currentUser));
   }
 
   initialUser(user: User) {
@@ -61,7 +61,7 @@ export class AuthService {
         map((response: any) => {
           if (response) {
             localStorage.setItem('token', response.tokenString);
-            localStorage.setItem('user', JSON.stringify(response.user));
+            // localStorage.setItem('user', JSON.stringify(response.user));
             this.userToken = response.tokenString;
             const user = response.user as User;
             this.changeCurrentUser(this.initialUser(user));

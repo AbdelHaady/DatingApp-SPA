@@ -3,16 +3,17 @@ import { User } from '../_models/User';
 import { Observable, of } from 'rxjs';
 import { UserService } from '../_services/user.service';
 import { AlertifyService } from '../_services/alertify.service';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
+import { PaginatedResult } from '../_models/pagination';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MemberListReslover implements Resolve<User[]> {
+export class MemberListReslover implements Resolve<PaginatedResult<User[]>> {
   resolve(
     route: ActivatedRouteSnapshot
-  ): User[] | Observable<User[]> | Promise<User[]> {
+  ): PaginatedResult<User[]> | Observable<PaginatedResult<User[]>> | Promise<PaginatedResult<User[]>> {
     return this.userService.getUsers().pipe(
       catchError(error => {
         this.alertifyService.error('Problem retrieving data');
