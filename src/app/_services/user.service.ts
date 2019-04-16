@@ -26,19 +26,32 @@ export class UserService {
     };
   }
 
-  getUsers(userParams?: UserParams): Observable<PaginatedResult<User[]>> {
+  getUsers(userParams?: UserParams) {
+    console.log(userParams);
     return this.http
       .get<HttpResponse<any>>(
         this.baseUrl +
           'users' +
           (userParams || userParams != null
             ? '?' +
-            (userParams.pageNumber != null ? 'pageNumber=' + userParams.pageNumber + '&' : '') +
-            (userParams.itemsPerPage != null ? 'itemsPerPage=' + userParams.itemsPerPage + '&' : '') +
-            (userParams.gender != null ? 'gender=' + userParams.gender + '&' : '') +
-            (userParams.orderBy != null ? 'orderBy=' + userParams.orderBy + '&' : '') +
-            (userParams.minAge != null ? 'minAge=' + userParams.minAge + '&' : '') +
-            (userParams.maxAge != null ? 'maxAge=' + userParams.maxAge : '' )
+              (userParams.pageNumber != null
+                ? 'pageNumber=' + userParams.pageNumber + '&'
+                : '') +
+              (userParams.itemsPerPage != null
+                ? 'pageSize=' + userParams.itemsPerPage + '&'
+                : '') +
+              (userParams.gender != null
+                ? 'gender=' + userParams.gender + '&'
+                : '') +
+              (userParams.orderBy != null
+                ? 'orderBy=' + userParams.orderBy + '&'
+                : '') +
+              (userParams.minAge != null
+                ? 'minAge=' + userParams.minAge + '&'
+                : '') +
+              (userParams.maxAge != null ? 'maxAge=' + userParams.maxAge + '&' : '') +
+              (userParams.Likees ? 'likees=' + userParams.Likees : '') +
+              (userParams.Likers ? 'likers=' + userParams.Likers : '')
             : ''),
         this.requestOptions()
       )
@@ -53,6 +66,12 @@ export class UserService {
         }),
         catchError(this.handleError)
       );
+  }
+
+  sendLike(id: number, likeeId: number) {
+    return this.http
+      .post(this.baseUrl + 'users/' + id + '/like' + '/' + likeeId, {})
+      .pipe(catchError(this.handleError));
   }
 
   getUser(id: number): Observable<User> {
@@ -80,6 +99,9 @@ export class UserService {
   }
 
   private handleError(errorResponse: HttpErrorResponse) {
+    if (errorResponse.status === 400) {
+      return throwError(errorResponse.error);
+    }
     const applicationError = errorResponse.headers.get('Application-Error');
     if (applicationError) {
       return throwError(applicationError);

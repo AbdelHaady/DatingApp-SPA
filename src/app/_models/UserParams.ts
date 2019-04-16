@@ -5,4 +5,6 @@ export interface UserParams {
   pageNumber?: number;
   itemsPerPage?: number;
   orderBy?: string;
+  Likees?: boolean;
+  Likers?: boolean;
 }
